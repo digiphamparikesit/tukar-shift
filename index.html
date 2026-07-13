@@ -384,7 +384,7 @@
    Tempelkan URL Web App Apps Script (diakhiri /exec) di sini.
    Lihat file AppsScript_TukarShift.gs untuk cara deploy.
 ========================================================= */
-const SCRIPT_URL = "PASTE_URL_WEB_APP_APPS_SCRIPT_DI_SINI";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFoa5--tqPOorgaXOz-TO27_SZR-wXndNR9oPDgc1NLjoVwKOQGBw4MmRM4sYmZ95Gpw/exec";
 
 let records = [];
 let editingId = null;
@@ -401,7 +401,7 @@ function showToast(msg){
 
 function shiftBadge(val){
   if(!val) return "";
-  const map = {"Pagi":"pagi","Siang":"siang","Malam":"malam","Libur":"libur"};
+  const map = {"Pagi":"pagi","Siang":"siang","Malam":"malam","Midel":"midel","Libur":"libur"};
   const cls = map[val] || "libur";
   return `<span class="badge ${cls}">${val}</span>`;
 }
