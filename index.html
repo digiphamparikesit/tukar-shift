@@ -379,7 +379,13 @@
 </div>
 
 <script>
-const STORAGE_PREFIX = "tukarshift:";
+/* =========================================================
+   KONFIGURASI GOOGLE SHEET
+   Tempelkan URL Web App Apps Script (diakhiri /exec) di sini.
+   Lihat file AppsScript_TukarShift.gs untuk cara deploy.
+========================================================= */
+const SCRIPT_URL = "PASTE_URL_WEB_APP_APPS_SCRIPT_DI_SINI";
+
 let records = [];
 let editingId = null;
 let deleteTargetId = null;
@@ -418,37 +424,103 @@ function genId(){
   return "TS-" + Date.now().toString(36).toUpperCase() + "-" + Math.floor(Math.random()*900+100);
 }
 
+// Mengubah objek record (camelCase) menjadi format kolom sheet (header asli)
+function toSheetRow(rec){
+  return {
+    "Submission ID": rec.submissionId,
+    "Respondent ID": rec.respondentId,
+    "Submitted at": rec.submittedAt,
+    "Tahun": rec.tahun,
+    "Bulan": rec.bulan,
+    "Depo": rec.depo,
+    "Tanggal ganti shift": rec.tanggalGanti,
+    "Nama staff yang tukar shiff": rec.namaStaff,
+    "Shift Lama": rec.shiftLama,
+    "Shift Baru": rec.shiftBaru,
+    "Nama Staff pengganti": rec.namaPengganti,
+    "Shiff lama (P)": rec.shiftLamaP,
+    "Shiff baru(P)": rec.shiftBaruP
+  };
+}
+
+// Mengubah baris sheet (header asli) menjadi objek record (camelCase) yang dipakai UI
+function fromSheetRow(row){
+  return {
+    submissionId: row["Submission ID"],
+    respondentId: row["Respondent ID"],
+    submittedAt: row["Submitted at"],
+    tahun: row["Tahun"],
+    bulan: row["Bulan"],
+    depo: row["Depo"],
+    tanggalGanti: formatSheetDate_(row["Tanggal ganti shift"]),
+    namaStaff: row["Nama staff yang tukar shiff"],
+    shiftLama: row["Shift Lama"],
+    shiftBaru: row["Shift Baru"],
+    namaPengganti: row["Nama Staff pengganti"],
+    shiftLamaP: row["Shiff lama (P)"],
+    shiftBaruP: row["Shiff baru(P)"]
+  };
+}
+
+// Apps Script mengirim tanggal sebagai ISO datetime; ubah ke yyyy-mm-dd untuk <input type="date">
+function formatSheetDate_(val){
+  if(!val) return "";
+  const s = String(val);
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
+  const d = new Date(val);
+  if(isNaN(d)) return "";
+  return d.toISOString().substring(0,10);
+}
+
+function isConfigured(){
+  return SCRIPT_URL && SCRIPT_URL.indexOf("PASTE_URL") === -1;
+}
+
 async function loadRecords(){
   $("loadingState").style.display = "block";
-  try{
-    const list = await window.storage.list(STORAGE_PREFIX, true);
+  if(!isConfigured()){
+    $("loadingState").textContent = "⚠️ URL Google Apps Script belum diisi. Lihat komentar SCRIPT_URL di kode.";
     records = [];
-    if(list && list.keys && list.keys.length){
-      for(const k of list.keys){
-        try{
-          const res = await window.storage.get(k, true);
-          if(res && res.value){
-            records.push(JSON.parse(res.value));
-          }
-        }catch(e){ /* skip broken key */ }
-      }
-    }
+    renderTable();
+    renderStats();
+    return;
+  }
+  try{
+    const res = await fetch(SCRIPT_URL);
+    const json = await res.json();
+    if(json.status !== "ok") throw new Error(json.message || "Gagal memuat data");
+    records = (json.data || []).map(fromSheetRow);
     records.sort((a,b)=> (b.submittedAt||"").localeCompare(a.submittedAt||""));
+    $("loadingState").style.display = "none";
   }catch(e){
     console.error("Gagal memuat data:", e);
-    showToast("Gagal memuat data dari penyimpanan.");
+    $("loadingState").textContent = "Gagal memuat data dari Google Sheet. Periksa koneksi / URL Apps Script.";
+    showToast("Gagal memuat data dari Google Sheet.");
   }
-  $("loadingState").style.display = "none";
   renderTable();
   renderStats();
 }
 
-async function saveRecord(rec){
-  await window.storage.set(STORAGE_PREFIX + rec.submissionId, JSON.stringify(rec), true);
+async function postToScript(body){
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // hindari CORS preflight Apps Script
+    body: JSON.stringify(body)
+  });
+  const json = await res.json();
+  if(json.status !== "ok") throw new Error(json.message || "Gagal memproses data");
+  return json;
+}
+
+async function saveRecord(rec, isUpdate){
+  await postToScript({
+    action: isUpdate ? "update" : "add",
+    record: toSheetRow(rec)
+  });
 }
 
 async function deleteRecord(id){
-  await window.storage.delete(STORAGE_PREFIX + id, true);
+  await postToScript({ action: "delete", submissionId: id });
 }
 
 function getFormData(){
@@ -491,19 +563,23 @@ async function handleSubmit(){
     showToast("Mohon lengkapi semua kolom wajib (*).");
     return;
   }
+  if(!isConfigured()){
+    showToast("URL Google Apps Script belum diisi di kode HTML.");
+    return;
+  }
   $("btnSubmit").disabled = true;
   try{
     if(editingId){
       const existing = records.find(r => r.submissionId === editingId);
       const rec = Object.assign({}, existing, data);
-      await saveRecord(rec);
+      await saveRecord(rec, true);
       showToast("Data berhasil diperbarui.");
     } else {
       const rec = Object.assign({
         submissionId: genId(),
         submittedAt: new Date().toISOString(),
       }, data);
-      await saveRecord(rec);
+      await saveRecord(rec, false);
       showToast("Pengajuan tukar shift berhasil disimpan.");
     }
     await loadRecords();
