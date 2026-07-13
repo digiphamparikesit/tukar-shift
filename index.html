@@ -151,7 +151,20 @@
     font-weight:600;
     white-space:nowrap;
     position:sticky;top:0;
+    cursor:pointer;
+    user-select:none;
+    transition:.15s background;
   }
+  thead th:hover{background:var(--hijau-700);}
+  thead th:last-child{cursor:default;}
+  thead th:last-child:hover{background:var(--hijau-800);}
+  .sort-ind{
+    display:inline-block;
+    margin-left:5px;
+    font-size:10px;
+    opacity:.55;
+  }
+  thead th.sort-active .sort-ind{opacity:1;color:var(--hijau-300);}
   tbody td{
     padding:10px 12px;
     border-bottom:1px solid var(--border);
@@ -336,20 +349,20 @@
     <div class="table-scroll">
       <table>
         <thead>
-          <tr>
-            <th>Submission ID</th>
-            <th>Respondent ID</th>
-            <th>Submitted At</th>
-            <th>Tahun</th>
-            <th>Bulan</th>
-            <th>Depo</th>
-            <th>Tanggal Ganti Shift</th>
-            <th>Nama Staff Tukar Shift</th>
-            <th>Shift Lama</th>
-            <th>Shift Baru</th>
-            <th>Nama Staff Pengganti</th>
-            <th>Shiff Lama (P)</th>
-            <th>Shiff Baru (P)</th>
+          <tr id="tableHeadRow">
+            <th data-key="submissionId">Submission ID<span class="sort-ind"></span></th>
+            <th data-key="respondentId">Respondent ID<span class="sort-ind"></span></th>
+            <th data-key="submittedAt">Submitted At<span class="sort-ind"></span></th>
+            <th data-key="tahun" data-type="num">Tahun<span class="sort-ind"></span></th>
+            <th data-key="bulan">Bulan<span class="sort-ind"></span></th>
+            <th data-key="depo">Depo<span class="sort-ind"></span></th>
+            <th data-key="tanggalGanti">Tanggal Ganti Shift<span class="sort-ind"></span></th>
+            <th data-key="namaStaff">Nama Staff Tukar Shift<span class="sort-ind"></span></th>
+            <th data-key="shiftLama">Shift Lama<span class="sort-ind"></span></th>
+            <th data-key="shiftBaru">Shift Baru<span class="sort-ind"></span></th>
+            <th data-key="namaPengganti">Nama Staff Pengganti<span class="sort-ind"></span></th>
+            <th data-key="shiftLamaP">Shiff Lama (P)<span class="sort-ind"></span></th>
+            <th data-key="shiftBaruP">Shiff Baru (P)<span class="sort-ind"></span></th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -388,6 +401,8 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFoa5--tqPOorgaXOz-TO27_SZR-wXndNR9oPDgc1NLjoVwKOQGBw4MmRM4sYmZ95Gpw/exec";
 
 let records = [];
+let sortKey = null;
+let sortDir = "asc"; // "asc" | "desc"
 let editingId = null;
 let deleteTargetId = null;
 
@@ -674,6 +689,26 @@ function renderTable(){
     return true;
   });
 
+  if(sortKey){
+    const th = document.querySelector(`th[data-key="${sortKey}"]`);
+    const isNum = th && th.dataset.type === "num";
+    filtered.sort((a,b)=>{
+      let va = a[sortKey], vb = b[sortKey];
+      if(isNum){
+        va = parseFloat(va) || 0;
+        vb = parseFloat(vb) || 0;
+        return sortDir === "asc" ? va - vb : vb - va;
+      }
+      va = (va ?? "").toString().toLowerCase();
+      vb = (vb ?? "").toString().toLowerCase();
+      return sortDir === "asc"
+        ? va.localeCompare(vb, "id", {numeric:true})
+        : vb.localeCompare(va, "id", {numeric:true});
+    });
+  }
+
+  updateSortIndicators();
+
   const tbody = $("tableBody");
   tbody.innerHTML = "";
 
@@ -734,6 +769,29 @@ function exportCSV(){
   showToast("File CSV berhasil diunduh.");
 }
 
+function handleSort(key){
+  if(sortKey === key){
+    sortDir = sortDir === "asc" ? "desc" : "asc";
+  } else {
+    sortKey = key;
+    sortDir = "asc";
+  }
+  renderTable();
+}
+
+function updateSortIndicators(){
+  document.querySelectorAll("#tableHeadRow th[data-key]").forEach(th=>{
+    const ind = th.querySelector(".sort-ind");
+    if(th.dataset.key === sortKey){
+      th.classList.add("sort-active");
+      ind.textContent = sortDir === "asc" ? "▲" : "▼";
+    } else {
+      th.classList.remove("sort-active");
+      ind.textContent = "⇅";
+    }
+  });
+}
+
 // Events
 $("btnSubmit").addEventListener("click", handleSubmit);
 $("btnReset").addEventListener("click", resetForm);
@@ -741,6 +799,9 @@ $("btnExport").addEventListener("click", exportCSV);
 $("searchBox").addEventListener("input", renderTable);
 $("filterBulan").addEventListener("change", renderTable);
 $("filterTahun").addEventListener("change", renderTable);
+document.querySelectorAll("#tableHeadRow th[data-key]").forEach(th=>{
+  th.addEventListener("click", ()=> handleSort(th.dataset.key));
+});
 $("modalCancel").addEventListener("click", ()=> $("modalOverlay").classList.remove("show"));
 $("modalConfirm").addEventListener("click", async ()=>{
   if(deleteTargetId){
