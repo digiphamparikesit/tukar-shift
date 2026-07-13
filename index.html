@@ -401,7 +401,7 @@ function showToast(msg){
 
 function shiftBadge(val){
   if(!val) return "";
-  const map = {"Pagi":"pagi","Siang":"siang","Malam":"malam","Midel":"midel","Libur":"libur"};
+  const map = {"Pagi":"pagi","Siang":"siang","Malam":"malam","Libur":"libur"};
   const cls = map[val] || "libur";
   return `<span class="badge ${cls}">${val}</span>`;
 }
