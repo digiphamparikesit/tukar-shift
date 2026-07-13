@@ -342,6 +342,7 @@
             <th>Submitted At</th>
             <th>Tahun</th>
             <th>Bulan</th>
+            <th>Bulan 1 (Filter)</th>
             <th>Depo</th>
             <th>Tanggal Ganti Shift</th>
             <th>Nama Staff Tukar Shift</th>
@@ -440,7 +441,8 @@ function toSheetRow(rec){
     "Shift Baru": rec.shiftBaru,
     "Nama Staff pengganti": rec.namaPengganti,
     "Shiff lama (P)": rec.shiftLamaP,
-    "Shiff baru(P)": rec.shiftBaruP
+    "Shiff baru(P)": rec.shiftBaruP,
+    "Bulan 1": rec.bulan
   };
 }
 
@@ -459,7 +461,8 @@ function fromSheetRow(row){
     shiftBaru: row["Shift Baru"],
     namaPengganti: row["Nama Staff pengganti"],
     shiftLamaP: row["Shiff lama (P)"],
-    shiftBaruP: row["Shiff baru(P)"]
+    shiftBaruP: row["Shiff baru(P)"],
+    bulan1: row["Bulan 1"]
   };
 }
 
@@ -633,7 +636,7 @@ function fmtDate(str){
 function renderStats(){
   const total = records.length;
   const thisMonth = new Date().toLocaleString("id-ID",{month:"long"});
-  const monthCount = records.filter(r => r.bulan === thisMonth).length;
+  const monthCount = records.filter(r => r.bulan1 === thisMonth).length;
   const staffSet = new Set(records.map(r => r.namaStaff).filter(Boolean));
   const depoSet = new Set(records.map(r => r.depo).filter(Boolean));
 
@@ -663,7 +666,7 @@ function renderTable(){
   const fTahun = $("filterTahun").value;
 
   let filtered = records.filter(r=>{
-    if(fBulan && r.bulan !== fBulan) return false;
+    if(fBulan && r.bulan1 !== fBulan) return false;
     if(fTahun && String(r.tahun) !== String(fTahun)) return false;
     if(search){
       const hay = [r.respondentId,r.depo,r.namaStaff,r.namaPengganti,r.submissionId].join(" ").toLowerCase();
@@ -689,6 +692,7 @@ function renderTable(){
       <td>${fmtDateTime(r.submittedAt)}</td>
       <td>${r.tahun || "-"}</td>
       <td>${r.bulan || "-"}</td>
+      <td>${r.bulan1 || "-"}</td>
       <td>${r.depo || "-"}</td>
       <td>${fmtDate(r.tanggalGanti)}</td>
       <td>${r.namaStaff || "-"}</td>
@@ -713,11 +717,11 @@ function exportCSV(){
     showToast("Tidak ada data untuk diexport.");
     return;
   }
-  const headers = ["Submission ID","Respondent ID","Submitted at","Tahun","Bulan","Depo","Tanggal ganti shift","Nama staff yang tukar shiff","Shift Lama","Shift Baru","Nama Staff pengganti","Shiff lama (P)","Shiff baru(P)"];
+  const headers = ["Submission ID","Respondent ID","Submitted at","Tahun","Bulan","Depo","Tanggal ganti shift","Nama staff yang tukar shiff","Shift Lama","Shift Baru","Nama Staff pengganti","Shiff lama (P)","Shiff baru(P)","Bulan 1"];
   const rows = records.map(r => [
     r.submissionId, r.respondentId, r.submittedAt, r.tahun, r.bulan, r.depo,
     r.tanggalGanti, r.namaStaff, r.shiftLama, r.shiftBaru, r.namaPengganti,
-    r.shiftLamaP, r.shiftBaruP
+    r.shiftLamaP, r.shiftBaruP, r.bulan1
   ]);
   const csv = [headers, ...rows].map(row =>
     row.map(v => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")
