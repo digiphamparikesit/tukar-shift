@@ -3,827 +3,640 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tukar Shift Petugas</title>
+<title>Portal Pengajuan Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --hijau-950:#0b2e13;
-    --hijau-900:#0f3d1a;
-    --hijau-800:#155225;
-    --hijau-700:#1c6b30;
-    --hijau-600:#22843c;
-    --hijau-500:#2fa84c;
-    --hijau-400:#4cc468;
-    --hijau-300:#8ade9a;
-    --hijau-100:#e3f7e7;
-    --hijau-50:#f3fbf4;
-    --amber:#e8a33d;
-    --merah:#d9534f;
-    --bg:#f0f7f1;
-    --card:#ffffff;
-    --ink:#173a1f;
-    --muted:#5c7a63;
-    --border:#d3ead7;
-    --shadow: 0 4px 14px rgba(15,61,26,0.08);
+    --green-900:#0B3D2A;
+    --green-800:#0F4D34;
+    --green-700:#146C43;
+    --green-600:#1E8455;
+    --green-500:#2F9E63;
+    --green-100:#E3F1E8;
+    --green-050:#F2F7F3;
+    --paper:#F6F7F2;
+    --ink:#16241C;
+    --muted:#5C6B61;
+    --border:#D7E3D9;
+    --danger:#B3261E;
+    --danger-bg:#FBEAE9;
+    --radius:12px;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background:
-      radial-gradient(circle at 100% 0%, var(--hijau-100), transparent 45%),
-      var(--bg);
+    background:var(--paper);
     color:var(--ink);
-    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    padding:40px 16px 80px;
   }
-  header{
-    background:linear-gradient(120deg, var(--hijau-900), var(--hijau-700) 60%, var(--hijau-500));
-    color:#fff;
-    padding:22px 28px;
+  .wrap{max-width:640px;margin:0 auto;transition:max-width .2s;}
+  .wrap.wide{max-width:960px;}
+  .brand{
     display:flex;
     align-items:center;
-    gap:16px;
-    box-shadow:var(--shadow);
-    position:sticky;
-    top:0;
-    z-index:20;
+    gap:12px;
+    margin-bottom:28px;
   }
-  header .logo{
-    width:46px;height:46px;border-radius:12px;
-    background:rgba(255,255,255,0.15);
-    display:flex;align-items:center;justify-content:center;
-    font-size:24px;
-    flex-shrink:0;
+  .brand svg{flex-shrink:0;}
+  .brand h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0;
+    color:var(--green-900);
+    letter-spacing:-0.01em;
   }
-  header h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.3px;}
-  header p{margin:2px 0 0;font-size:12.5px;color:var(--hijau-100);}
-  .wrap{
-    max-width:1300px;
-    margin:0 auto;
-    padding:22px 20px 60px;
+  .brand p{
+    margin:2px 0 0;
+    font-size:13px;
+    color:var(--muted);
   }
   .card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    box-shadow:var(--shadow);
-    padding:20px 22px;
-    margin-bottom:22px;
-  }
-  .card h2{
-    margin:0 0 4px;
-    font-size:16px;
-    color:var(--hijau-800);
-    display:flex;align-items:center;gap:8px;
-  }
-  .card .sub{margin:0 0 16px;font-size:12.5px;color:var(--muted);}
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px 16px;
-  }
-  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr);}}
-  @media(max-width:600px){.grid{grid-template-columns:1fr;}}
-  .field{display:flex;flex-direction:column;gap:6px;}
-  .field label{
-    font-size:12px;font-weight:600;color:var(--hijau-800);
-  }
-  .field label .req{color:var(--merah);}
-  input,select{
-    border:1px solid var(--border);
-    background:var(--hijau-50);
-    border-radius:9px;
-    padding:9px 11px;
-    font-size:13.5px;
-    color:var(--ink);
-    outline:none;
-    transition:.15s border-color, .15s box-shadow;
-    width:100%;
-    font-family:inherit;
-  }
-  input:focus,select:focus{
-    border-color:var(--hijau-500);
-    box-shadow:0 0 0 3px rgba(47,168,76,0.18);
     background:#fff;
-  }
-  .actions-row{
-    display:flex;justify-content:flex-end;gap:10px;margin-top:18px;
-    flex-wrap:wrap;
-  }
-  button{
-    font-family:inherit;
-    font-size:13.5px;
-    font-weight:600;
-    border-radius:9px;
-    padding:10px 18px;
-    cursor:pointer;
-    border:1px solid transparent;
-    transition:.15s transform, .15s box-shadow, .15s background;
-    display:inline-flex;align-items:center;gap:6px;
-  }
-  button:active{transform:translateY(1px);}
-  .btn-primary{background:var(--hijau-600);color:#fff;box-shadow:0 3px 10px rgba(34,132,60,0.35);}
-  .btn-primary:hover{background:var(--hijau-700);}
-  .btn-ghost{background:#fff;color:var(--hijau-700);border:1px solid var(--hijau-300);}
-  .btn-ghost:hover{background:var(--hijau-100);}
-  .btn-danger{background:#fff;color:var(--merah);border:1px solid #f0c2c0;}
-  .btn-danger:hover{background:#fdeceb;}
-  .toolbar{
-    display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px;
-  }
-  .toolbar .search{position:relative;flex:1;min-width:220px;max-width:340px;}
-  .toolbar .search input{padding-left:32px;}
-  .toolbar .search::before{
-    content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.6;
-  }
-  .toolbar .filters{display:flex;gap:8px;flex-wrap:wrap;}
-  .toolbar select{width:auto;min-width:120px;}
-  .table-scroll{
-    overflow-x:auto;
-    border-radius:12px;
     border:1px solid var(--border);
+    border-radius:16px;
+    padding:28px;
+    margin-bottom:20px;
   }
-  table{border-collapse:collapse;width:100%;min-width:1400px;font-size:12.8px;}
-  thead th{
-    background:var(--hijau-800);
-    color:#fff;
-    text-align:left;
-    padding:11px 12px;
+  .section-label{
+    font-size:11px;
     font-weight:600;
-    white-space:nowrap;
-    position:sticky;top:0;
-    cursor:pointer;
-    user-select:none;
-    transition:.15s background;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--green-700);
+    margin:0 0 14px;
   }
-  thead th:hover{background:var(--hijau-700);}
-  thead th:last-child{cursor:default;}
-  thead th:last-child:hover{background:var(--hijau-800);}
-  .sort-ind{
-    display:inline-block;
-    margin-left:5px;
-    font-size:10px;
-    opacity:.55;
-  }
-  thead th.sort-active .sort-ind{opacity:1;color:var(--hijau-300);}
-  tbody td{
-    padding:10px 12px;
-    border-bottom:1px solid var(--border);
-    white-space:nowrap;
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:500;
     color:var(--ink);
+    margin-bottom:6px;
   }
-  tbody tr:nth-child(even){background:var(--hijau-50);}
-  tbody tr:hover{background:var(--hijau-100);}
-  .badge{
-    display:inline-block;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:700;
+  label .opt{color:var(--muted);font-weight:400;}
+  input[type=text], input[type=date], input[type=time], textarea, select{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    background:#fff;
+    transition:border-color .15s;
   }
-  .badge.pagi{background:#fff4dc;color:#8a6100;}
-  .badge.sore{background:#e2f2ff;color:#0b5a94;}
-  .badge.midel{background:#ffe3ef;color:#a3134f;}
-  .badge.malam{background:#e9e5fb;color:#4b3aa0;}
-  .badge.libur{background:#f1f1f1;color:#666;}
-  .row-actions{display:flex;gap:6px;}
-  .icon-btn{
-    border:1px solid var(--border);background:#fff;border-radius:7px;padding:5px 9px;font-size:12px;cursor:pointer;
+  input:focus, textarea:focus, select:focus{
+    outline:none;
+    border-color:var(--green-600);
+    box-shadow:0 0 0 3px var(--green-100);
   }
-  .icon-btn.edit{color:var(--hijau-700);}
-  .icon-btn.del{color:var(--merah);}
-  .icon-btn:hover{background:var(--hijau-100);}
-  .empty{
-    text-align:center;padding:40px 20px;color:var(--muted);
+  textarea{resize:vertical;min-height:80px;}
+  .nip-row{display:flex;gap:8px;}
+  .nip-row input{font-family:'IBM Plex Mono',monospace;}
+  .btn-check{
+    flex-shrink:0;
+    background:var(--green-700);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:0 18px;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:background .15s;
   }
-  .empty .big{font-size:34px;margin-bottom:8px;}
-  .stat-strip{
-    display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;
+  .btn-check:hover{background:var(--green-800);}
+  .btn-check:disabled{background:var(--border);cursor:not-allowed;}
+  .staff-preview{
+    margin-top:12px;
+    padding:12px 14px;
+    background:var(--green-050);
+    border:1px solid var(--green-100);
+    border-radius:8px;
+    font-size:13px;
+    display:none;
   }
-  .stat{
-    flex:1;min-width:160px;
-    background:linear-gradient(135deg,var(--hijau-600),var(--hijau-500));
-    color:#fff;border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);
+  .staff-preview.show{display:block;}
+  .staff-preview div{margin-bottom:2px;}
+  .staff-preview strong{color:var(--green-900);}
+  .staff-preview.error{
+    background:var(--danger-bg);
+    border-color:#F3C7C4;
+    color:var(--danger);
   }
-  .stat .num{font-size:24px;font-weight:800;}
-  .stat .lbl{font-size:11.5px;opacity:.9;}
-  .stat.alt{background:linear-gradient(135deg,var(--hijau-800),var(--hijau-700));}
-  .footer-note{
-    text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px;
+  .chips{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(130px,1fr));
+    gap:8px;
   }
-  .toast{
-    position:fixed;bottom:22px;right:22px;background:var(--hijau-800);color:#fff;
-    padding:12px 18px;border-radius:10px;box-shadow:var(--shadow);font-size:13px;
-    opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;z-index:100;
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#fff;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    transition:border-color .15s, background .15s, color .15s;
   }
-  .toast.show{opacity:1;transform:translateY(0);}
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(11,46,19,0.45);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
+  .chip svg{flex-shrink:0;stroke:var(--muted);transition:stroke .15s;}
+  .chip:hover{border-color:var(--green-500);}
+  .chip.active{
+    background:var(--green-700);
+    border-color:var(--green-700);
+    color:#fff;
   }
-  .modal-overlay.show{display:flex;}
-  .modal{
-    background:#fff;border-radius:14px;padding:22px;max-width:380px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  .chip.active svg{stroke:#fff;}
+
+  /* ==== WARNA PER JENIS FORMULIR ==== */
+  .chip[data-jenis="izin"]{background:#EAF1FE;border-color:#CBDCFB;}
+  .chip[data-jenis="izin"] svg{stroke:#2F6FED;}
+  .chip[data-jenis="izin"].active{background:#2F6FED;border-color:#2F6FED;}
+
+  .chip[data-jenis="sakit"]{background:#FCE7F3;border-color:#F6C6E0;}
+  .chip[data-jenis="sakit"] svg{stroke:#DB2777;}
+  .chip[data-jenis="sakit"].active{background:#DB2777;border-color:#DB2777;}
+
+  .chip[data-jenis="tukarshift"]{background:#EDE9FE;border-color:#D6CCFB;}
+  .chip[data-jenis="tukarshift"] svg{stroke:#7C3AED;}
+  .chip[data-jenis="tukarshift"].active{background:#7C3AED;border-color:#7C3AED;}
+
+  .chip[data-jenis="cuti"]{background:#FEF3C7;border-color:#FBE39A;}
+  .chip[data-jenis="cuti"] svg{stroke:#D97706;}
+  .chip[data-jenis="cuti"].active{background:#D97706;border-color:#D97706;}
+
+  .chip[data-jenis="telat"]{background:#CFFAFE;border-color:#A5F0F7;}
+  .chip[data-jenis="telat"] svg{stroke:#0891B2;}
+  .chip[data-jenis="telat"].active{background:#0891B2;border-color:#0891B2;}
+
+  .chip[data-jenis="absensieror"]{background:#FEE2E2;border-color:#FBC7C4;}
+  .chip[data-jenis="absensieror"] svg{stroke:#DC2626;}
+  .chip[data-jenis="absensieror"].active{background:#DC2626;border-color:#DC2626;}
+
+  /* Aksen warna pada kartu detail, mengikuti jenis formulir yang aktif */
+  #dynamicCard{border-left-width:4px;transition:border-color .15s, background .15s;}
+  #dynamicCard[data-jenis="izin"]{border-left-color:#2F6FED;background:#F8FAFF;}
+  #dynamicCard[data-jenis="izin"] #dynamicLabel{color:#2F6FED;}
+  #dynamicCard[data-jenis="sakit"]{border-left-color:#DB2777;background:#FEF8FB;}
+  #dynamicCard[data-jenis="sakit"] #dynamicLabel{color:#DB2777;}
+  #dynamicCard[data-jenis="tukarshift"]{border-left-color:#7C3AED;background:#FBFAFF;}
+  #dynamicCard[data-jenis="tukarshift"] #dynamicLabel{color:#7C3AED;}
+  #dynamicCard[data-jenis="cuti"]{border-left-color:#D97706;background:#FFFCF5;}
+  #dynamicCard[data-jenis="cuti"] #dynamicLabel{color:#D97706;}
+  #dynamicCard[data-jenis="telat"]{border-left-color:#0891B2;background:#F5FDFE;}
+  #dynamicCard[data-jenis="telat"] #dynamicLabel{color:#0891B2;}
+  #dynamicCard[data-jenis="absensieror"]{border-left-color:#DC2626;background:#FFFAFA;}
+  #dynamicCard[data-jenis="absensieror"] #dynamicLabel{color:#DC2626;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .radio-group{display:flex;gap:16px;padding-top:2px;}
+  .radio-opt{display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;}
+  .radio-opt input{width:auto;}
+  .submit-btn{
+    width:100%;
+    padding:14px;
+    background:var(--green-700);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    font-family:'Inter',sans-serif;
+    cursor:pointer;
+    transition:background .15s;
   }
-  .modal h3{margin:0 0 8px;color:var(--hijau-800);}
-  .modal p{margin:0 0 18px;font-size:13.5px;color:var(--muted);}
-  .modal .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
-  #loadingState{padding:30px;text-align:center;color:var(--muted);}
+  .submit-btn:hover{background:var(--green-800);}
+  .submit-btn:disabled{background:var(--border);cursor:not-allowed;}
+  .banner{
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:13px;
+    margin-top:14px;
+    display:none;
+  }
+  .banner.show{display:block;}
+  .banner.success{background:var(--green-100);color:var(--green-900);border:1px solid var(--green-500);}
+  .banner.error{background:var(--danger-bg);color:var(--danger);border:1px solid #F3C7C4;}
+  .empty-hint{font-size:13px;color:var(--muted);padding:8px 0;}
+
+  .col-group{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .col-group .col-title{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 12px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  @media (max-width:720px){
+    .col-group{grid-template-columns:1fr;}
+    .col-group > div:not(:last-child){
+      padding-bottom:16px;
+      margin-bottom:16px;
+      border-bottom:1px dashed var(--border);
+    }
+  }
+  @media (max-width:480px){
+    .row2{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">🔄</div>
-  <div>
-    <h1>Tukar Shift Petugas</h1>
-    <p>Formulir &amp; rekap pengajuan tukar shift petugas depo farmasi</p>
-  </div>
-</header>
-
 <div class="wrap">
 
-  <div class="stat-strip" id="statStrip"></div>
-
-  <!-- FORM -->
-  <div class="card">
-    <h2>📝 Form Pengajuan Tukar Shift</h2>
-    <p class="sub">Lengkapi data berikut untuk mengajukan atau mencatat pertukaran shift.</p>
-
-    <div class="grid">
-      <div class="field">
-        <label>Respondent ID <span class="req">*</span></label>
-        <input type="text" id="respondentId" placeholder="Contoh: RSP-021">
-      </div>
-      <div class="field">
-        <label>Tahun <span class="req">*</span></label>
-        <select id="tahun"></select>
-      </div>
-      <div class="field">
-        <label>Bulan <span class="req">*</span></label>
-        <select id="bulan">
-          <option value="">Pilih bulan</option>
-          <option>1.January</option><option>2.February</option><option>3.March</option>
-          <option>4.April</option><option>5.May</option><option>6.June</option>
-          <option>7.July</option><option>8.August</option><option>9.September</option>
-          <option>10.October</option><option>11.November</option><option>12.December</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Depo <span class="req">*</span></label>
-        <input list="depoList" id="depo" placeholder="Contoh: Depo Rawat Inap">
-        <datalist id="depoList">
-          <option value="Depo Rawat Inap">
-          <option value="Depo Rawat Jalan">
-          <option value="Depo IGD">
-          <option value="Depo Bedah Sentral">
-          <option value="Depo ICU">
-        </datalist>
-      </div>
-
-      <div class="field">
-        <label>Tanggal Ganti Shift <span class="req">*</span></label>
-        <input type="date" id="tanggalGanti">
-      </div>
-      <div class="field">
-        <label>Nama Staff yang Tukar Shift <span class="req">*</span></label>
-        <input type="text" id="namaStaff" placeholder="Nama staff pengaju">
-      </div>
-      <div class="field">
-        <label>Shift Lama <span class="req">*</span></label>
-        <select id="shiftLama">
-          <option value="">Pilih shift</option>
-          <option>Pagi</option><option>Sore</option><option>Midel</option><option>Malam</option><option>Libur</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Shift Baru <span class="req">*</span></label>
-        <select id="shiftBaru">
-          <option value="">Pilih shift</option>
-          <option>Pagi</option><option>Sore</option><option>Midel</option><option>Malam</option><option>Libur</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Nama Staff Pengganti <span class="req">*</span></label>
-        <input type="text" id="namaPengganti" placeholder="Nama staff pengganti">
-      </div>
-      <div class="field">
-        <label>Shiff Lama (P)</label>
-        <select id="shiftLamaP">
-          <option value="">Pilih shift</option>
-          <option>Pagi</option><option>Sore</option><option>Midel</option><option>Malam</option><option>Libur</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Shiff Baru (P)</label>
-        <select id="shiftBaruP">
-          <option value="">Pilih shift</option>
-          <option>Pagi</option><option>Sore</option><option>Midel</option><option>Malam</option><option>Libur</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="actions-row">
-      <button class="btn-ghost" id="btnReset" type="button">↺ Reset Form</button>
-      <button class="btn-primary" id="btnSubmit" type="button">✔ Simpan Pengajuan</button>
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+      <circle cx="17" cy="17" r="17" fill="#0F4D34"/>
+      <path d="M10 20c0-6 4-10 10-10 0 6-4 10-10 10z" fill="#2F9E63"/>
+      <path d="M10 20V24" stroke="#E3F1E8" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>Portal pengajuan staff</h1>
+      <p>Ajukan izin, sakit, tukar shift, cuti, keterlambatan, atau absensi eror</p>
     </div>
   </div>
 
-  <!-- TABLE -->
-  <div class="card">
-    <h2>📋 Rekap Tukar Shift</h2>
-    <p class="sub">Seluruh data tersimpan otomatis dan dapat diakses bersama tim.</p>
+  <form id="mainForm">
 
-    <div class="toolbar">
-      <div class="search">
-        <input type="text" id="searchBox" placeholder="Cari nama staff, depo, respondent ID...">
-      </div>
-      <div class="filters">
-        <select id="filterBulan">
-          <option value="">Semua Bulan</option>
-          <option>1.January</option><option>2.February</option><option>3.March</option>
-          <option>4.April</option><option>5.May</option><option>6.June</option>
-          <option>7.July</option><option>8.August</option><option>9.September</option>
-          <option>10.October</option><option>11.November</option><option>12.December</option>
-        </select>
-        <select id="filterTahun"><option value="">Semua Tahun</option></select>
-        <button class="btn-ghost" id="btnExport" type="button">⬇ Export CSV</button>
+    <div class="card">
+      <p class="section-label">Identitas staff</p>
+      <div class="field">
+        <label for="staffSearch">Cari nama staff</label>
+        <input type="text" id="staffSearch" list="staffOptions" placeholder="Ketik beberapa huruf nama..." autocomplete="off" required>
+        <datalist id="staffOptions"></datalist>
+        <div class="staff-preview" id="staffPreview"></div>
       </div>
     </div>
 
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr id="tableHeadRow">
-            <th data-key="submissionId">Submission ID<span class="sort-ind"></span></th>
-            <th data-key="respondentId">Respondent ID<span class="sort-ind"></span></th>
-            <th data-key="submittedAt">Submitted At<span class="sort-ind"></span></th>
-            <th data-key="tahun" data-type="num">Tahun<span class="sort-ind"></span></th>
-            <th data-key="bulan">Bulan<span class="sort-ind"></span></th>
-            <th data-key="depo">Depo<span class="sort-ind"></span></th>
-            <th data-key="tanggalGanti">Tanggal Ganti Shift<span class="sort-ind"></span></th>
-            <th data-key="namaStaff">Nama Staff Tukar Shift<span class="sort-ind"></span></th>
-            <th data-key="shiftLama">Shift Lama<span class="sort-ind"></span></th>
-            <th data-key="shiftBaru">Shift Baru<span class="sort-ind"></span></th>
-            <th data-key="namaPengganti">Nama Staff Pengganti<span class="sort-ind"></span></th>
-            <th data-key="shiftLamaP">Shiff Lama (P)<span class="sort-ind"></span></th>
-            <th data-key="shiftBaruP">Shiff Baru (P)<span class="sort-ind"></span></th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+    <div class="card">
+      <p class="section-label">Jenis formulir</p>
+      <div class="chips" id="jenisChips">
+        <div class="chip" data-jenis="izin">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+          Izin
+        </div>
+        <div class="chip" data-jenis="sakit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 6a5.5 5.5 0 0 0-10 2.5C2 12 9 18 12 20c1-.6 2-1.4 3-2.2"/></svg>
+          Sakit
+        </div>
+        <div class="chip" data-jenis="tukarshift">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Tukar shift
+        </div>
+        <div class="chip" data-jenis="cuti">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Cuti tahunan
+        </div>
+        <div class="chip" data-jenis="telat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Telat/pulang cepat
+        </div>
+        <div class="chip" data-jenis="absensieror">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          Absensi eror
+        </div>
+      </div>
     </div>
-    <div id="loadingState">Memuat data...</div>
-    <div class="empty" id="emptyState" style="display:none;">
-      <div class="big">🗂️</div>
-      <div>Belum ada data pengajuan tukar shift.</div>
+
+    <div class="card" id="dynamicCard" style="display:none;">
+      <p class="section-label" id="dynamicLabel">Detail pengajuan</p>
+      <div id="dynamicFields"></div>
     </div>
-    <p class="footer-note">Data disimpan otomatis dan dapat dilihat oleh seluruh pengguna aplikasi ini.</p>
-  </div>
 
-</div>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3>Hapus data?</h3>
-    <p>Data pengajuan tukar shift ini akan dihapus permanen dan tidak dapat dikembalikan.</p>
-    <div class="modal-actions">
-      <button class="btn-ghost" id="modalCancel" type="button">Batal</button>
-      <button class="btn-danger" id="modalConfirm" type="button">Hapus</button>
+    <div class="card" style="display:none;" id="emptyCard">
+      <p class="empty-hint">Pilih jenis formulir di atas untuk melanjutkan.</p>
     </div>
-  </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Kirim pengajuan</button>
+    <div class="banner" id="banner"></div>
+  </form>
+
 </div>
 
 <script>
-/* =========================================================
-   KONFIGURASI GOOGLE SHEET
-   Tempelkan URL Web App Apps Script (diakhiri /exec) di sini.
-   Lihat file AppsScript_TukarShift.gs untuk cara deploy.
-========================================================= */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFoa5--tqPOorgaXOz-TO27_SZR-wXndNR9oPDgc1NLjoVwKOQGBw4MmRM4sYmZ95Gpw/exec";
+// ==== KONFIGURASI ====
+// Ganti dengan URL Web App Google Apps Script yang sudah di-deploy
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFoa5--tqPOorgaXOz-TO27_SZR-wXndNR9oPDgc1NLjoVwKOQGBw4MmRM4sYmZ95Gpw/exec";
 
-let records = [];
-let sortKey = null;
-let sortDir = "asc"; // "asc" | "desc"
-let editingId = null;
-let deleteTargetId = null;
-
-const $ = (id) => document.getElementById(id);
-
-function showToast(msg){
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 2400);
-}
-
-function shiftBadge(val){
-  if(!val) return "";
-  const map = {"Pagi":"pagi","Sore":"sore","Midel":"midel","Malam":"malam","Libur":"libur"};
-  const cls = map[val] || "libur";
-  return `<span class="badge ${cls}">${val}</span>`;
-}
-
-function fillYearSelect(sel, withEmpty){
-  const cur = new Date().getFullYear();
-  if(withEmpty){
-    const opt = document.createElement("option");
-    opt.value=""; opt.textContent="Semua Tahun";
-    sel.appendChild(opt);
-  }
-  for(let y = cur+1; y >= cur-4; y--){
-    const opt = document.createElement("option");
-    opt.value = y; opt.textContent = y;
-    sel.appendChild(opt);
-  }
-}
-
-function genId(){
-  return "TS-" + Date.now().toString(36).toUpperCase() + "-" + Math.floor(Math.random()*900+100);
-}
-
-// Mengubah objek record (camelCase) menjadi format kolom sheet (header asli)
-function toSheetRow(rec){
-  return {
-    "Submission ID": rec.submissionId,
-    "Respondent ID": rec.respondentId,
-    "Submitted at": rec.submittedAt,
-    "Tahun": rec.tahun,
-    "Bulan": rec.bulan,
-    "Depo": rec.depo,
-    "Tanggal ganti shift": rec.tanggalGanti,
-    "Nama staff yang tukar shiff": rec.namaStaff,
-    "Shift Lama": rec.shiftLama,
-    "Shift Baru": rec.shiftBaru,
-    "Nama Staff pengganti": rec.namaPengganti,
-    "Shiff lama (P)": rec.shiftLamaP,
-    "Shiff baru(P)": rec.shiftBaruP
-  };
-}
-
-// Mengubah baris sheet (header asli) menjadi objek record (camelCase) yang dipakai UI
-function fromSheetRow(row){
-  return {
-    submissionId: row["Submission ID"],
-    respondentId: row["Respondent ID"],
-    submittedAt: row["Submitted at"],
-    tahun: row["Tahun"],
-    bulan: row["Bulan"],
-    depo: row["Depo"],
-    tanggalGanti: formatSheetDate_(row["Tanggal ganti shift"]),
-    namaStaff: row["Nama staff yang tukar shiff"],
-    shiftLama: row["Shift Lama"],
-    shiftBaru: row["Shift Baru"],
-    namaPengganti: row["Nama Staff pengganti"],
-    shiftLamaP: row["Shiff lama (P)"],
-    shiftBaruP: row["Shiff baru(P)"]
-  };
-}
-
-// Apps Script mengirim tanggal sebagai ISO datetime; ubah ke yyyy-mm-dd untuk <input type="date">
-function formatSheetDate_(val){
-  if(!val) return "";
-  const s = String(val);
-  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
-  const d = new Date(val);
-  if(isNaN(d)) return "";
-  return d.toISOString().substring(0,10);
-}
-
-function isConfigured(){
-  return SCRIPT_URL && SCRIPT_URL.indexOf("PASTE_URL") === -1;
-}
-
-async function loadRecords(){
-  $("loadingState").style.display = "block";
-  if(!isConfigured()){
-    $("loadingState").textContent = "⚠️ URL Google Apps Script belum diisi. Lihat komentar SCRIPT_URL di kode.";
-    records = [];
-    renderTable();
-    renderStats();
-    return;
-  }
-  try{
-    const res = await fetch(SCRIPT_URL);
-    const json = await res.json();
-    if(json.status !== "ok") throw new Error(json.message || "Gagal memuat data");
-    records = (json.data || []).map(fromSheetRow);
-    records.sort((a,b)=> (b.submittedAt||"").localeCompare(a.submittedAt||""));
-    $("loadingState").style.display = "none";
-  }catch(e){
-    console.error("Gagal memuat data:", e);
-    $("loadingState").textContent = "Gagal memuat data dari Google Sheet. Periksa koneksi / URL Apps Script.";
-    showToast("Gagal memuat data dari Google Sheet.");
-  }
-  renderTable();
-  renderStats();
-}
-
-async function postToScript(body){
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, // hindari CORS preflight Apps Script
-    body: JSON.stringify(body)
-  });
-  const json = await res.json();
-  if(json.status !== "ok") throw new Error(json.message || "Gagal memproses data");
-  return json;
-}
-
-async function saveRecord(rec, isUpdate){
-  await postToScript({
-    action: isUpdate ? "update" : "add",
-    record: toSheetRow(rec)
-  });
-}
-
-async function deleteRecord(id){
-  await postToScript({ action: "delete", submissionId: id });
-}
-
-function getFormData(){
-  return {
-    respondentId: $("respondentId").value.trim(),
-    tahun: $("tahun").value,
-    bulan: $("bulan").value,
-    depo: $("depo").value.trim(),
-    tanggalGanti: $("tanggalGanti").value,
-    namaStaff: $("namaStaff").value.trim(),
-    shiftLama: $("shiftLama").value,
-    shiftBaru: $("shiftBaru").value,
-    namaPengganti: $("namaPengganti").value.trim(),
-    shiftLamaP: $("shiftLamaP").value,
-    shiftBaruP: $("shiftBaruP").value,
-  };
-}
-
-function validate(data){
-  const required = ["respondentId","tahun","bulan","depo","tanggalGanti","namaStaff","shiftLama","shiftBaru","namaPengganti"];
-  for(const key of required){
-    if(!data[key]){
-      return false;
-    }
-  }
-  return true;
-}
-
-function resetForm(){
-  ["respondentId","depo","tanggalGanti","namaStaff"].forEach(id => $(id).value = "");
-  ["bulan","shiftLama","shiftBaru","shiftLamaP","shiftBaruP"].forEach(id => $(id).value = "");
-  $("tahun").value = new Date().getFullYear();
-  editingId = null;
-  $("btnSubmit").textContent = "✔ Simpan Pengajuan";
-}
-
-async function handleSubmit(){
-  const data = getFormData();
-  if(!validate(data)){
-    showToast("Mohon lengkapi semua kolom wajib (*).");
-    return;
-  }
-  if(!isConfigured()){
-    showToast("URL Google Apps Script belum diisi di kode HTML.");
-    return;
-  }
-  $("btnSubmit").disabled = true;
-  try{
-    if(editingId){
-      const existing = records.find(r => r.submissionId === editingId);
-      const rec = Object.assign({}, existing, data);
-      await saveRecord(rec, true);
-      showToast("Data berhasil diperbarui.");
-    } else {
-      const rec = Object.assign({
-        submissionId: genId(),
-        submittedAt: new Date().toISOString(),
-      }, data);
-      await saveRecord(rec, false);
-      showToast("Pengajuan tukar shift berhasil disimpan.");
-    }
-    await loadRecords();
-    resetForm();
-  }catch(e){
-    console.error(e);
-    showToast("Gagal menyimpan data. Coba lagi.");
-  }
-  $("btnSubmit").disabled = false;
-}
-
-function editRow(id){
-  const rec = records.find(r => r.submissionId === id);
-  if(!rec) return;
-  $("respondentId").value = rec.respondentId || "";
-  $("tahun").value = rec.tahun || "";
-  $("bulan").value = rec.bulan || "";
-  $("depo").value = rec.depo || "";
-  $("tanggalGanti").value = rec.tanggalGanti || "";
-  $("namaStaff").value = rec.namaStaff || "";
-  $("shiftLama").value = rec.shiftLama || "";
-  $("shiftBaru").value = rec.shiftBaru || "";
-  $("namaPengganti").value = rec.namaPengganti || "";
-  $("shiftLamaP").value = rec.shiftLamaP || "";
-  $("shiftBaruP").value = rec.shiftBaruP || "";
-  editingId = id;
-  $("btnSubmit").textContent = "✔ Perbarui Pengajuan";
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function askDelete(id){
-  deleteTargetId = id;
-  $("modalOverlay").classList.add("show");
-}
-
-function fmtDateTime(iso){
-  if(!iso) return "-";
-  const d = new Date(iso);
-  if(isNaN(d)) return iso;
-  return d.toLocaleString("id-ID", {day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
-}
-
-function fmtDate(str){
-  if(!str) return "-";
-  const d = new Date(str + "T00:00:00");
-  if(isNaN(d)) return str;
-  return d.toLocaleDateString("id-ID", {day:"2-digit",month:"short",year:"numeric"});
-}
-
-function renderStats(){
-  const total = records.length;
-  const monthNamesEn = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const now = new Date();
-  const thisMonth = (now.getMonth()+1) + "." + monthNamesEn[now.getMonth()];
-  const monthCount = records.filter(r => r.bulan === thisMonth).length;
-  const staffSet = new Set(records.map(r => r.namaStaff).filter(Boolean));
-  const depoSet = new Set(records.map(r => r.depo).filter(Boolean));
-
-  $("statStrip").innerHTML = `
-    <div class="stat">
-      <div class="num">${total}</div>
-      <div class="lbl">Total Pengajuan Tukar Shift</div>
-    </div>
-    <div class="stat alt">
-      <div class="num">${monthCount}</div>
-      <div class="lbl">Pengajuan Bulan ${thisMonth}</div>
-    </div>
-    <div class="stat">
-      <div class="num">${staffSet.size}</div>
-      <div class="lbl">Staff Terlibat</div>
-    </div>
-    <div class="stat alt">
-      <div class="num">${depoSet.size}</div>
-      <div class="lbl">Depo Terlibat</div>
-    </div>
-  `;
-}
-
-function renderTable(){
-  const search = $("searchBox").value.trim().toLowerCase();
-  const fBulan = $("filterBulan").value;
-  const fTahun = $("filterTahun").value;
-
-  let filtered = records.filter(r=>{
-    if(fBulan && r.bulan !== fBulan) return false;
-    if(fTahun && String(r.tahun) !== String(fTahun)) return false;
-    if(search){
-      const hay = [r.respondentId,r.depo,r.namaStaff,r.namaPengganti,r.submissionId].join(" ").toLowerCase();
-      if(!hay.includes(search)) return false;
-    }
-    return true;
-  });
-
-  if(sortKey){
-    const th = document.querySelector(`th[data-key="${sortKey}"]`);
-    const isNum = th && th.dataset.type === "num";
-    filtered.sort((a,b)=>{
-      let va = a[sortKey], vb = b[sortKey];
-      if(isNum){
-        va = parseFloat(va) || 0;
-        vb = parseFloat(vb) || 0;
-        return sortDir === "asc" ? va - vb : vb - va;
+// ==== DEFINISI FIELD PER JENIS FORMULIR ====
+const formConfigs = {
+  izin: {
+    label: "Detail izin",
+    fields: [
+      { id: "tanggalMulai", label: "Tanggal mulai", type: "date", required: true },
+      { id: "tanggalSelesai", label: "Tanggal selesai", type: "date", required: true },
+      { id: "keterangan", label: "Alasan izin", type: "textarea", required: true }
+    ]
+  },
+  sakit: {
+    label: "Detail sakit",
+    fields: [
+      { id: "tanggalMulai", label: "Tanggal mulai", type: "date", required: true },
+      { id: "tanggalSelesai", label: "Tanggal selesai", type: "date", required: true },
+      { id: "keterangan", label: "Keterangan (opsional lampiran surat dokter)", type: "textarea", required: false }
+    ]
+  },
+  // Jenis ini pakai sistem "Tukar Shift Petugas" yang sudah ada (sheet "TukarShift"),
+  // ditampilkan dalam 3 kolom (kiri/tengah/kanan) supaya muat 1 layar di komputer.
+  tukarshift: {
+    label: "Detail tukar shift",
+    isLegacy: true,
+    columns: [
+      {
+        title: "Informasi umum",
+        fields: [
+          { id: "tahun", label: "Tahun", type: "text", required: true, placeholder: "contoh: 2026" },
+          { id: "bulan", label: "Bulan", type: "select", required: true,
+            options: ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"] },
+          { id: "depo", label: "Depo", type: "select", required: true,
+            options: ["GD.FARMASI","RANAP","FARM TERPADU","IGD","IBS","UPSS","CENDERAWASIH"] },
+          { id: "tanggalGantiShift", label: "Tanggal ganti shift", type: "date", required: true }
+        ]
+      },
+      {
+        title: "Shift saya",
+        fields: [
+          { id: "shiftLama", label: "Shift lama", type: "select", required: true, options: ["P","TS","S","M","L"] },
+          { id: "shiftBaru", label: "Shift baru", type: "select", required: true, options: ["P","TS","S","M","L"] }
+        ]
+      },
+      {
+        title: "Shift pengganti",
+        fields: [
+          { id: "nipRekan", label: "Nama staff pengganti", type: "name-lookup", required: true },
+          { id: "shiftLamaP", label: "Shift lama pengganti", type: "select", required: true, options: ["P","TS","S","M","L"] },
+          { id: "shiftBaruP", label: "Shift baru pengganti", type: "select", required: true, options: ["P","TS","S","M","L"] }
+        ]
       }
-      va = (va ?? "").toString().toLowerCase();
-      vb = (vb ?? "").toString().toLowerCase();
-      return sortDir === "asc"
-        ? va.localeCompare(vb, "id", {numeric:true})
-        : vb.localeCompare(va, "id", {numeric:true});
+    ]
+  },
+  cuti: {
+    label: "Detail cuti tahunan",
+    fields: [
+      { id: "tanggalMulai", label: "Tanggal mulai", type: "date", required: true },
+      { id: "tanggalSelesai", label: "Tanggal selesai", type: "date", required: true },
+      { id: "keterangan", label: "Keterangan", type: "textarea", required: false }
+    ]
+  },
+  telat: {
+    label: "Detail telat / pulang cepat",
+    fields: [
+      { id: "tanggal", label: "Tanggal", type: "date", required: true },
+      { id: "jenisTelat", label: "Jenis", type: "radio", options: [["telat","Telat"],["pulang_cepat","Pulang cepat"]], required: true },
+      { id: "jam", label: "Jam", type: "time", required: true },
+      { id: "keterangan", label: "Alasan", type: "textarea", required: true }
+    ]
+  },
+  absensieror: {
+    label: "Detail absensi eror",
+    fields: [
+      { id: "tanggalAbsensi", label: "Tanggal absensi", type: "date", required: true },
+      { id: "waktuAbsensi", label: "Waktu absensi", type: "radio", options: [["masuk","Absen masuk"],["pulang","Absen pulang"]], required: true },
+      { id: "keterangan", label: "Kendala tidak bisa absen", type: "textarea", required: true }
+    ]
+  }
+};
+
+let currentJenis = null;
+let staffData = null;
+let nipLookupCache = {}; // simpan hasil lookup NIP selain NIP utama, contoh: { nipRekan: {nip, nama, ...} }
+
+// ==== PILIH JENIS FORMULIR ====
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    currentJenis = chip.dataset.jenis;
+    nipLookupCache = {};
+    document.querySelector(".wrap").classList.toggle("wide", currentJenis === "tukarshift");
+    renderDynamicFields(currentJenis);
+  });
+});
+
+function buildFieldWrap(f){
+  const wrap = document.createElement("div");
+  wrap.className = "field";
+
+  if (f.type === "textarea"){
+    wrap.innerHTML = `
+      <label for="${f.id}">${f.label}${f.required ? "" : ' <span class="opt">(opsional)</span>'}</label>
+      <textarea id="${f.id}" name="${f.id}" ${f.required ? "required" : ""}></textarea>`;
+  } else if (f.type === "radio"){
+    wrap.innerHTML = `
+      <label>${f.label}</label>
+      <div class="radio-group">
+        ${f.options.map((o,i) => `
+          <label class="radio-opt">
+            <input type="radio" name="${f.id}" value="${o[0]}" ${i===0 ? "checked" : ""}>
+            ${o[1]}
+          </label>`).join("")}
+      </div>`;
+  } else if (f.type === "name-lookup"){
+    wrap.innerHTML = `
+      <label for="${f.id}">${f.label}</label>
+      <input type="text" id="${f.id}" name="${f.id}" list="staffOptions" placeholder="Ketik beberapa huruf nama..." autocomplete="off" required>
+      <div class="staff-preview" id="${f.id}Preview"></div>`;
+  } else if (f.type === "select"){
+    wrap.innerHTML = `
+      <label for="${f.id}">${f.label}${f.required ? "" : ' <span class="opt">(opsional)</span>'}</label>
+      <select id="${f.id}" name="${f.id}" ${f.required ? "required" : ""}>
+        <option value="" disabled selected>Pilih ${f.label.toLowerCase()}</option>
+        ${f.options.map(o => `<option value="${o}">${o}</option>`).join("")}
+      </select>`;
+  } else {
+    wrap.innerHTML = `
+      <label for="${f.id}">${f.label}${f.required ? "" : ' <span class="opt">(opsional)</span>'}</label>
+      <input type="${f.type}" id="${f.id}" name="${f.id}" ${f.required ? "required" : ""}>`;
+  }
+  return wrap;
+}
+
+function renderDynamicFields(jenis){
+  const config = formConfigs[jenis];
+  const card = document.getElementById("dynamicCard");
+  const container = document.getElementById("dynamicFields");
+  document.getElementById("dynamicLabel").textContent = config.label;
+  document.getElementById("emptyCard").style.display = "none";
+  card.style.display = "block";
+  card.dataset.jenis = jenis;
+  container.innerHTML = "";
+
+  if (config.columns){
+    // Layout 3 kolom (kiri/tengah/kanan) — dipakai untuk tukar shift
+    const colGroup = document.createElement("div");
+    colGroup.className = "col-group";
+
+    config.columns.forEach(col => {
+      const colEl = document.createElement("div");
+      colEl.innerHTML = `<p class="col-title">${col.title}</p>`;
+      col.fields.forEach(f => colEl.appendChild(buildFieldWrap(f)));
+      colGroup.appendChild(colEl);
     });
-  }
 
-  updateSortIndicators();
-
-  const tbody = $("tableBody");
-  tbody.innerHTML = "";
-
-  if(filtered.length === 0){
-    $("emptyState").style.display = "block";
+    container.appendChild(colGroup);
   } else {
-    $("emptyState").style.display = "none";
+    // Layout satu kolom biasa — izin/sakit/cuti/telat/absensieror
+    config.fields.forEach(f => container.appendChild(buildFieldWrap(f)));
   }
 
-  for(const r of filtered){
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r.submissionId}</td>
-      <td>${r.respondentId || "-"}</td>
-      <td>${fmtDateTime(r.submittedAt)}</td>
-      <td>${r.tahun || "-"}</td>
-      <td>${r.bulan || "-"}</td>
-      <td>${r.depo || "-"}</td>
-      <td>${fmtDate(r.tanggalGanti)}</td>
-      <td>${r.namaStaff || "-"}</td>
-      <td>${shiftBadge(r.shiftLama)}</td>
-      <td>${shiftBadge(r.shiftBaru)}</td>
-      <td>${r.namaPengganti || "-"}</td>
-      <td>${shiftBadge(r.shiftLamaP)}</td>
-      <td>${shiftBadge(r.shiftBaruP)}</td>
-      <td>
-        <div class="row-actions">
-          <button class="icon-btn edit" onclick="editRow('${r.submissionId}')">✏️</button>
-          <button class="icon-btn del" onclick="askDelete('${r.submissionId}')">🗑️</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  }
-}
-
-function exportCSV(){
-  if(records.length === 0){
-    showToast("Tidak ada data untuk diexport.");
-    return;
-  }
-  const headers = ["Submission ID","Respondent ID","Submitted at","Tahun","Bulan","Depo","Tanggal ganti shift","Nama staff yang tukar shiff","Shift Lama","Shift Baru","Nama Staff pengganti","Shiff lama (P)","Shiff baru(P)"];
-  const rows = records.map(r => [
-    r.submissionId, r.respondentId, r.submittedAt, r.tahun, r.bulan, r.depo,
-    r.tanggalGanti, r.namaStaff, r.shiftLama, r.shiftBaru, r.namaPengganti,
-    r.shiftLamaP, r.shiftBaruP
-  ]);
-  const csv = [headers, ...rows].map(row =>
-    row.map(v => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")
-  ).join("\n");
-  const blob = new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "tukar_shift_petugas.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast("File CSV berhasil diunduh.");
-}
-
-function handleSort(key){
-  if(sortKey === key){
-    sortDir = sortDir === "asc" ? "desc" : "asc";
-  } else {
-    sortKey = key;
-    sortDir = "asc";
-  }
-  renderTable();
-}
-
-function updateSortIndicators(){
-  document.querySelectorAll("#tableHeadRow th[data-key]").forEach(th=>{
-    const ind = th.querySelector(".sort-ind");
-    if(th.dataset.key === sortKey){
-      th.classList.add("sort-active");
-      ind.textContent = sortDir === "asc" ? "▲" : "▼";
-    } else {
-      th.classList.remove("sort-active");
-      ind.textContent = "⇅";
-    }
+  container.querySelectorAll('input[list="staffOptions"]').forEach(input => {
+    input.addEventListener("input", () => {
+      const found = findStaffFromInputValue(input.value);
+      const previewEl = document.getElementById(input.id + "Preview");
+      if (found){
+        nipLookupCache[input.id] = found;
+        previewEl.innerHTML = `
+          <div><strong>${found.nama}</strong></div>
+          <div>${found.departemen || "-"} &middot; ${found.jabatan || "-"}</div>`;
+        previewEl.className = "staff-preview show";
+      } else {
+        delete nipLookupCache[input.id];
+        previewEl.className = "staff-preview";
+      }
+    });
   });
 }
 
-// Events
-$("btnSubmit").addEventListener("click", handleSubmit);
-$("btnReset").addEventListener("click", resetForm);
-$("btnExport").addEventListener("click", exportCSV);
-$("searchBox").addEventListener("input", renderTable);
-$("filterBulan").addEventListener("change", renderTable);
-$("filterTahun").addEventListener("change", renderTable);
-document.querySelectorAll("#tableHeadRow th[data-key]").forEach(th=>{
-  th.addEventListener("click", ()=> handleSort(th.dataset.key));
-});
-$("modalCancel").addEventListener("click", ()=> $("modalOverlay").classList.remove("show"));
-$("modalConfirm").addEventListener("click", async ()=>{
-  if(deleteTargetId){
-    try{
-      await deleteRecord(deleteTargetId);
-      showToast("Data berhasil dihapus.");
-      await loadRecords();
-    }catch(e){
-      console.error(e);
-      showToast("Gagal menghapus data.");
-    }
+// ==== MUAT DAFTAR STAFF (sekali saat halaman dibuka) ====
+let staffList = [];
+
+async function loadStaffList(){
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=listStaff`);
+    const data = await res.json();
+    staffList = Array.isArray(data) ? data : [];
+
+    const datalist = document.getElementById("staffOptions");
+    datalist.innerHTML = staffList
+      .map(s => `<option value="${s.nama} (${s.nip})">`)
+      .join("");
+  } catch (err){
+    console.error("Gagal memuat daftar staff:", err);
   }
-  deleteTargetId = null;
-  $("modalOverlay").classList.remove("show");
+}
+document.addEventListener("DOMContentLoaded", loadStaffList);
+
+// Cocokkan teks input (format "Nama (NIP)") dengan data staff yang sudah dimuat
+function findStaffFromInputValue(value){
+  const match = value.match(/\(([^)]+)\)\s*$/);
+  const nip = match ? match[1].trim() : null;
+  if (!nip) return null;
+  return staffList.find(s => s.nip === nip) || null;
+}
+
+// ==== AUTOFILL IDENTITAS UTAMA ====
+document.getElementById("staffSearch").addEventListener("input", () => {
+  const previewEl = document.getElementById("staffPreview");
+  const found = findStaffFromInputValue(document.getElementById("staffSearch").value);
+
+  if (found){
+    staffData = found;
+    previewEl.innerHTML = `
+      <div><strong>${found.nama}</strong></div>
+      <div>${found.departemen || "-"} &middot; ${found.jabatan || "-"}</div>`;
+    previewEl.className = "staff-preview show";
+  } else {
+    staffData = null;
+    previewEl.className = "staff-preview";
+  }
 });
 
-// Init
-fillYearSelect($("tahun"), false);
-fillYearSelect($("filterTahun"), true);
-$("tahun").value = new Date().getFullYear();
-loadRecords();
-</script>
+// ==== SUBMIT FORM ====
+document.getElementById("mainForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const banner = document.getElementById("banner");
+  banner.className = "banner";
 
+  if (!currentJenis){
+    banner.textContent = "Pilih jenis formulir terlebih dahulu.";
+    banner.classList.add("banner","error","show");
+    return;
+  }
+  if (!staffData){
+    banner.textContent = "Data staff belum ditemukan. Cari dan pilih nama terlebih dahulu.";
+    banner.classList.add("banner","error","show");
+    return;
+  }
+
+  const formData = new FormData(e.target);
+  let payload;
+
+  if (currentJenis === "tukarshift"){
+    const rekan = nipLookupCache["nipRekan"];
+    if (!rekan){
+      banner.textContent = "Cari dan pilih nama staff pengganti terlebih dahulu.";
+      banner.classList.add("banner","error","show");
+      return;
+    }
+    // Payload ini sengaja TANPA field "jenis" — router Code.gs akan
+    // mengarahkannya ke sistem Tukar Shift Petugas yang sudah ada (sheet "Tukar Shift").
+    payload = {
+      action: "add",
+      record: {
+        "Submission ID": "TS-" + Date.now(),
+        "Respondent ID": staffData.nip,
+        "Submitted at": new Date().toISOString(),
+        "Tahun": formData.get("tahun") || "",
+        "Bulan": formData.get("bulan") || "",
+        "Depo": formData.get("depo") || "",
+        "Tanggal ganti shift": formData.get("tanggalGantiShift") || "",
+        "Nama staff yang tukar shiff": staffData.nama,
+        "Shift Lama": formData.get("shiftLama") || "",
+        "Shift Baru": formData.get("shiftBaru") || "",
+        "Nama Staff pengganti": rekan.nama,
+        "Shiff lama (P)": formData.get("shiftLamaP") || "",
+        "Shiff baru(P)": formData.get("shiftBaruP") || ""
+      }
+    };
+  } else {
+    payload = { jenis: currentJenis, nip: staffData.nip };
+    formData.forEach((value, key) => { payload[key] = value; });
+  }
+
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Mengirim...";
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    banner.textContent = "Pengajuan berhasil dikirim.";
+    banner.classList.add("banner","success","show");
+    e.target.reset();
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    document.getElementById("dynamicCard").style.display = "none";
+    document.querySelector(".wrap").classList.remove("wide");
+    document.getElementById("staffPreview").className = "staff-preview";
+    currentJenis = null;
+    staffData = null;
+    nipLookupCache = {};
+  } catch (err){
+    banner.textContent = "Gagal mengirim pengajuan. Periksa koneksi dan coba lagi.";
+    banner.classList.add("banner","error","show");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Kirim pengajuan";
+  }
+});
+</script>
 </body>
 </html>
